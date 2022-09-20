@@ -17,7 +17,7 @@ class ChoozoException(Exception):
         super().__init__("ChoozoException")
 
 
-async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morph, start):
+async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morph, start, title):
     if split not in ['FullCountdown', 'M/m', 'RandomSplit']:
         raise ChoozoException("Invalid item split setting.  Must be FullCountdown, M/m or RandomSplit.")
 
@@ -139,8 +139,14 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         "RandomSplit": "Random"
     }
 
+    if start == "NotDeepStart":
+        start="Not DeepStart"
+
     embed = discord.Embed(
-        title="Generated Super Metroid Choozo %s Seed" % ("Race" if race else "Practice"),
+        title="%s\n%s Seed" % (
+            "Generated Super Metroid Choozo" if len(title) == 0 else ' '.join(title),
+            "Race" if race else "Practice"
+        ),
         description=(
             f"**Item Split: **{splitDescriptionDict[split]}\n"
             f"**Area: **{area[:-4]}\n"
@@ -170,21 +176,23 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
 
 async def generate_choozo_parse_args(ctx, race, args):
     try:
-        if 7 != len(args):
+        if ctx.message.channel.id != 1021775359605219359 and ctx.message.channel.id != 1019847346344964126:
+            raise ChoozoException("Please go to the #practice channel to generate race seeds")
+        if len(args) < 7:
             raise ChoozoException("%s %s provided, 7 required (item split, area, boss, difficulty, escape, morph, start)" % (len(args), "argument" if 1 == len(args) else "arguments"))
-        await generate_choozo(ctx, race, args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+        await generate_choozo(ctx, race, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7:])
     except ChoozoException as ce:
         await ctx.send(ce.message)
 
 
 @bot.command()
-@commands.cooldown(1, 30, commands.BucketType.user)
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def choozopractice(ctx, *args):
     await generate_choozo_parse_args(ctx, False, args)
 
 
 @bot.command()
-@commands.cooldown(1, 30, commands.BucketType.user)
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def choozorace(ctx, *args):
     await generate_choozo_parse_args(ctx, True, args)
 
