@@ -197,6 +197,12 @@ async def choozorace(ctx, *args):
     await generate_choozo_parse_args(ctx, True, args)
 
 
+@bot.event
+async def on_message(message):
+    ctx = await bot.get_context(message)
+    await bot.invoke(ctx)
+
+
 token = os.environ['CHOOZO_TOKEN']
 bot.run(token, log_handler=logging.StreamHandler())
 
