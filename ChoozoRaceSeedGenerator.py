@@ -197,6 +197,40 @@ async def choozorace(ctx, *args):
     await generate_choozo_parse_args(ctx, True, args)
 
 
+async def on_role_react(payload, add):
+    global roles
+    if 1021969894293647411 == payload.channel_id:
+        emojiDict = {
+            "🇦": "Async Race Admin",
+            "🇨": "Comms",
+            "🇵": "Practice",
+            "🇷": "Runner",
+            "🇹": "Tracking"
+        }
+        if payload.emoji.name in emojiDict:
+            reactRoleName = emojiDict[payload.emoji.name]
+            if roles is None:
+                roles = await bot.guilds[0].fetch_roles()
+            for role in roles:
+                if role.name == reactRoleName:
+                    if add:
+                        await payload.member.add_roles(role)
+                    else:
+                        for member in bot.get_all_members():
+                            if member.id == payload.user_id:
+                                await member.remove_roles(role)
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    await on_role_react(payload, True)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    await on_role_react(payload, False)
+
+
 @bot.event
 async def on_message(message):
     ctx = await bot.get_context(message)
