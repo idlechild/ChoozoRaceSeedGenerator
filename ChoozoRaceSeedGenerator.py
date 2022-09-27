@@ -7,6 +7,7 @@ from os import system
 from pyz3r.smvaria import SuperMetroidVaria
 
 
+roles = None
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -115,7 +116,7 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
 
         "maxDifficulty": difficultyDict[difficulty],
 
-        "escapeRando": "off" if boss == "VanillaEscape" else "on",
+        "escapeRando": "off" if escape == "VanillaEscape" else "on",
 
         "morphPlacement": morphDict[morph],
 
