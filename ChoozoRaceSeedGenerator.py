@@ -4,7 +4,8 @@ from discord.ext import commands
 import logging
 import os
 from os import system
-from pyz3r.smvaria import SuperMetroidVaria
+#from pyz3r.smvaria import SuperMetroidVaria
+from smvaria import SuperMetroidVaria
 
 
 roles = None
@@ -129,7 +130,8 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         settings_preset="Season_Races",
         skills_preset="newbie" if difficulty == "BasicDifficulty" else "Season_Races",
         race=race,
-        settings_dict=settings
+        settings_dict=settings,
+        raise_for_status=False
     )
     if not hasattr(seed, 'guid'):
         raise ChoozoException("Error: %s" % seed.data)
