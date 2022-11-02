@@ -4,8 +4,7 @@ from discord.ext import commands
 import logging
 import os
 from os import system
-#from pyz3r.smvaria import SuperMetroidVaria
-from smvaria import SuperMetroidVaria
+from pyz3r.smvaria import SuperMetroidVaria
 
 
 roles = None
@@ -105,8 +104,6 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         "hud": "on",
         "suitsRestriction": "off",
         "variaTweaks": "on",
-        "relaxed_round_robin_cf": "off",
-        "objectiveRandom": "false",
 
         "majorsSplit": splitDict[split],
         "majorsSplitMultiSelect": ['FullWithHUD', 'Major'],
