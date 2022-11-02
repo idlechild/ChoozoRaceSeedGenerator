@@ -111,9 +111,8 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         "majorsSplit": splitDict[split],
         "majorsSplitMultiSelect": ['FullWithHUD', 'Major'],
 
-        "areaRandomization": "off" if area == "VanillaArea" else "on",
+        "areaRandomization": "full" if area == "FullArea" else "light" if area == "LightArea" else "off",
         "areaLayout": "off" if area == "VanillaArea" else "on",
-        "lightAreaRandomization": "on" if area == "LightArea" else "off",
 
         "bossRandomization": "off" if boss == "VanillaBoss" else "on",
 
