@@ -28,8 +28,8 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
     if boss not in ['RandomBoss', 'VanillaBoss']:
         raise ChoozoException("Invalid boss setting.  Must be RandomBoss or VanillaBoss.")
 
-    if difficulty not in ['HarderDifficulty', 'HardDifficulty', 'MediumDifficulty', 'EasyDifficulty', 'BasicDifficulty']:
-        raise ChoozoException("Invalid difficulty setting.  Must be HarderDifficulty, HardDifficulty, MediumDifficulty, EasyDifficulty or BasicDifficulty.")
+    if difficulty not in ['VeryHardDifficulty', 'HarderDifficulty', 'HardDifficulty', 'MediumDifficulty', 'EasyDifficulty', 'BasicDifficulty']:
+        raise ChoozoException("Invalid difficulty setting.  Must be VeryHardDifficulty, HarderDifficulty, HardDifficulty, MediumDifficulty, EasyDifficulty or BasicDifficulty.")
 
     if escape not in ['RandomEscape', 'VanillaEscape']:
         raise ChoozoException("Invalid escape setting.  Must be RandomEscape or VanillaEscape.")
@@ -47,6 +47,7 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
     }
 
     difficultyDict = {
+        "VeryHardDifficulty": "harder",
         "HarderDifficulty": "harder",
         "HardDifficulty": "hard",
         "MediumDifficulty": "medium",
@@ -140,8 +141,11 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         "RandomSplit": "Random"
     }
 
+    if difficulty == "VeryHardDifficulty":
+        difficulty = "Very HardDifficulty"
+
     if start == "NotDeepStart":
-        start="Not DeepStart"
+        start = "Not DeepStart"
 
     embed = discord.Embed(
         title="%s\n%s Seed" % (
@@ -177,8 +181,9 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
 
 async def generate_choozo_parse_args(ctx, race, args):
     try:
-        if ctx.message.channel.id != 1021775359605219359 and ctx.message.channel.id != 1019847346344964126:
-            raise ChoozoException("Please go to the #practice channel to generate race seeds")
+        if not isinstance(ctx.message.channel, discord.channel.DMChannel):
+            if ctx.message.channel.id != 1021775359605219359 and ctx.message.channel.id != 1019847346344964126:
+                raise ChoozoException("Please go to the #practice channel to generate race seeds")
         if len(args) < 7:
             raise ChoozoException("%s %s provided, 7 required (item split, area, boss, difficulty, escape, morph, start)" % (len(args), "argument" if 1 == len(args) else "arguments"))
         await generate_choozo(ctx, race, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7:])
