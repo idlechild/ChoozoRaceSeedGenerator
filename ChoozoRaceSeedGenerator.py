@@ -105,6 +105,11 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
         "hud": "on",
         "suitsRestriction": "off",
         "variaTweaks": "on",
+        "hiddenObjectives": "off",
+        "logic": "vanilla",
+        "nbObjective": "1",
+        "nbObjectivesRequired": "off",
+        "revealMap": "off",
 
         "majorsSplit": splitDict[split],
         "majorsSplitMultiSelect": ['FullWithHUD', 'Major'],

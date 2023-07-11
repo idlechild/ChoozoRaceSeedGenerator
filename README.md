@@ -1,6 +1,11 @@
 # ChoozoRaceSeedGenerator
 
-docker build --tag <tag_name> .
+docker build --tag choozo . \
+docker run -e CHOOZO_TOKEN=%CHOOZO_TOKEN% -d choozo
 
-docker run -e CHOOZO_TOKEN=<choozo_token> <tag_name>
+docker stop <container_name> \
+docker rm <container_name>
+
+docker system prune -a \
+docker system df
 
