@@ -184,14 +184,61 @@ async def generate_choozo(ctx, race, split, area, boss, difficulty, escape, morp
     await ctx.send(embed=embed)
 
 
+async def generate_smvaria(ctx, settings, skills):
+    await ctx.send("Generating seed...")
+    seed = await SuperMetroidVaria.create(
+        settings_preset=settings,
+        skills_preset=skills,
+        race=True,
+        raise_for_status=False
+    )
+    if not hasattr(seed, 'guid'):
+        raise ChoozoException("Error: %s" % seed.data)
+
+    embed = discord.Embed(
+        title="Generated Super Metroid Race Seed",
+        description=(
+            f"**Settings: **{settings}\n"
+            f"**Skills: **{skills}"
+        ),
+        color=discord.Colour.orange(),
+        timestamp=datetime.datetime.utcnow()
+    )
+    embed.add_field(
+        name="Link",
+        value=seed.url,
+        inline=False
+    )
+    errorMsg = seed.data.get('errorMsg', '')
+    if errorMsg != '':
+        embed.add_field(
+            name="Warnings",
+            value=errorMsg.replace("<br/>", "\n").rstrip(),
+            inline=False
+        )
+    await ctx.send(embed=embed)
+
+
 async def generate_choozo_parse_args(ctx, race, args):
     try:
         if not isinstance(ctx.message.channel, discord.channel.DMChannel):
             if ctx.message.channel.id != 1021775359605219359 and ctx.message.channel.id != 1019847346344964126:
-                raise ChoozoException("Please go to the #practice channel to generate race seeds")
+                raise ChoozoException("Please go to the #practice channel to generate seeds")
         if len(args) < 7:
             raise ChoozoException("%s %s provided, 7 required (item split, area, boss, difficulty, escape, morph, start)" % (len(args), "argument" if 1 == len(args) else "arguments"))
         await generate_choozo(ctx, race, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7:])
+    except ChoozoException as ce:
+        await ctx.send(ce.message)
+
+
+async def generate_smvaria_parse_args(ctx, race, args):
+    try:
+        if not isinstance(ctx.message.channel, discord.channel.DMChannel):
+            if ctx.message.channel.id != 1021775359605219359 and ctx.message.channel.id != 1019847346344964126:
+                raise ChoozoException("Please go to the #practice channel to generate seeds")
+        if len(args) != 2:
+            raise ChoozoException("%s %s provided, 2 required (settings preset, skills preset)" % (len(args), "argument" if 1 == len(args) else "arguments"))
+        await generate_smvaria(ctx, args[0], args[1])
     except ChoozoException as ce:
         await ctx.send(ce.message)
 
@@ -206,6 +253,12 @@ async def choozopractice(ctx, *args):
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def choozorace(ctx, *args):
     await generate_choozo_parse_args(ctx, True, args)
+
+
+@bot.command()
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def smvaria(ctx, *args):
+    await generate_smvaria_parse_args(ctx, True, args)
 
 
 async def on_role_react(payload, add):
