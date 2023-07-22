@@ -1,7 +1,6 @@
 import datetime
 import discord
 from discord.ext import commands
-import logging
 import os
 from os import system
 import traceback
@@ -52,11 +51,11 @@ async def discord_generate_choozo(ctx, race, split, area, boss, difficulty, esca
 async def discord_generate_smvaria(ctx, settingsPreset, skillsPreset):
     await ctx.send("Generating seed...")
     settingsDict = {}
-    seed = await generate_choozo(settingsPreset, skillsPreset, True, settingsDict)
+    seed = await generate_smvaria(settingsPreset, skillsPreset, True, settingsDict)
     embedTitle = "Generated Super Metroid Race Seed"
     embedDescription = (
-        f"**Settings: **{settings}\n"
-        f"**Skills: **{skills}"
+        f"**Settings: **{settingsPreset}\n"
+        f"**Skills: **{skillsPreset}"
     )
     await discord_embed_seed(ctx, seed, embedTitle, embedDescription)
 
@@ -225,5 +224,8 @@ async def on_message(message):
 
 
 async def discord_start_bot():
-    await discordbot.start(os.environ.get("CHOOZO_TOKEN"))
+    token = os.environ.get("CHOOZO_TOKEN")
+    if not token:
+        raise ChoozoException("Choozo Race Seed Generator CHOOZO_TOKEN not set!")
+    await discordbot.start(token)
 
